@@ -1,87 +1,37 @@
-"""
-Data Preprocessing Module - MEMBER 1 TASK
-==========================================
-
-Author: [Member 1 Name]
-Description: This module handles loading, cleaning, and preprocessing 
-             of transactional datasets for CARPENTER algorithm.
-
-Tasks for Member 1:
-------------------
-1. Implement load_dataset() - Load data from various formats
-2. Implement preprocess_data() - Clean and format data
-3. Implement create_transaction_matrix() - Convert to matrix format
-4. Implement data_statistics() - Generate dataset statistics
-5. Create sample datasets in data/raw/
-6. Add comprehensive docstrings and comments
-7. Write unit tests in tests/test_data_preprocessing.py
-"""
-
 import numpy as np
 import pandas as pd
 from typing import List, Dict, Set, Tuple
-from collections import defaultdict
 
 
 class DataLoader:
-    """
-    Handles loading and preprocessing of transactional data.
-    
-    Transactional data format:
-    - Each line represents one transaction
-    - Items in a transaction are separated by spaces or commas
-    - Example: "1 2 3 4" or "apple,bread,milk"
-    """
+    """Load and preprocess transactional data for CARPENTER algorithm."""
     
     def __init__(self, filepath: str = None):
-        """
-        Initialize the DataLoader.
-        
-        Args:
-            filepath: Path to the dataset file
-        """
+        # Store file path
         self.filepath = filepath
+        # List to store all transactions
         self.transactions = []
+        # Set to store unique items
         self.items = set()
+        # Counter for total transactions
         self.num_transactions = 0
         
     def load_dataset(self, filepath: str = None, delimiter: str = ' ') -> List[Set[str]]:
-        """
-        Load transactional dataset from file.
-        
-        Args:
-            filepath: Path to dataset file (overrides initialized path)
-            delimiter: Character separating items (default: space)
-            
-        Returns:
-            List of transactions, where each transaction is a set of items
-            
-        Example:
-            >>> loader = DataLoader()
-            >>> transactions = loader.load_dataset('data/raw/retail.txt')
-            >>> print(f"Loaded {len(transactions)} transactions")
-            
-        TODO for Member 1:
-        - Handle different file formats (.txt, .csv, .dat)
-        - Handle empty lines and malformed data
-        - Support different delimiters
-        - Add error handling for file not found
-        """
+        """Load transactions from file."""
+        # Update filepath if provided
         if filepath:
             self.filepath = filepath
-            
-        # TODO: Implement file loading logic
-        # Read file line by line
-        # Parse each line into items
-        # Store as list of sets
         
         try:
+            # Open and read file
             with open(self.filepath, 'r') as f:
                 for line in f:
-                    line = line.strip()
+                    line = line.strip()  # Remove whitespace
                     if line:  # Skip empty lines
+                        # Split line into items and convert to set
                         items = set(line.split(delimiter))
                         self.transactions.append(items)
+                        # Add items to global item set
                         self.items.update(items)
                         
             self.num_transactions = len(self.transactions)
@@ -95,39 +45,18 @@ class DataLoader:
             print(f"✗ Error loading dataset: {str(e)}")
             return []
     
-    def preprocess_data(self, 
-                       remove_duplicates: bool = True,
+    def preprocess_data(self, remove_duplicates: bool = True, 
                        min_transaction_length: int = 1) -> List[Set[str]]:
-        """
-        Clean and preprocess the loaded transactions.
-        
-        Args:
-            remove_duplicates: Remove duplicate transactions
-            min_transaction_length: Minimum items per transaction
-            
-        Returns:
-            Preprocessed list of transactions
-            
-        TODO for Member 1:
-        - Remove duplicate transactions
-        - Filter short transactions
-        - Handle missing values
-        - Normalize item names (lowercase, strip whitespace)
-        """
+        """Clean and filter transactions."""
         if not self.transactions:
-            print("✗ No transactions loaded. Call load_dataset() first.")
+            print("✗ No transactions loaded.")
             return []
         
         processed = self.transactions.copy()
         original_count = len(processed)
         
-        # TODO: Implement preprocessing steps
-        # 1. Remove duplicates if requested
-        # 2. Filter by minimum length
-        # 3. Clean item names
-        
+        # Remove duplicate transactions
         if remove_duplicates:
-            # Convert sets to frozensets for hashing, remove duplicates
             processed = [set(t) for t in set([frozenset(t) for t in processed])]
             
         # Filter by minimum length
@@ -138,32 +67,20 @@ class DataLoader:
         return processed
     
     def create_transaction_matrix(self) -> Tuple[np.ndarray, List[str], List[int]]:
-        """
-        Convert transactions to binary matrix format.
-        
-        Returns:
-            Tuple of (matrix, item_list, transaction_ids)
-            - matrix: Binary numpy array (transactions × items)
-            - item_list: Ordered list of items
-            - transaction_ids: List of transaction IDs
-            
-        TODO for Member 1:
-        - Create binary matrix where matrix[i][j] = 1 if item j in transaction i
-        - Return item mapping for interpretation
-        - Optimize for sparse data if needed
-        """
+        """Convert transactions to binary matrix format."""
         if not self.transactions:
             print("✗ No transactions to convert.")
             return np.array([]), [], []
         
-        # Create item to index mapping
+        # Sort items for consistent ordering
         item_list = sorted(list(self.items))
+        # Map each item to a column index
         item_to_idx = {item: idx for idx, item in enumerate(item_list)}
         
-        # Initialize binary matrix
+        # Create empty matrix (all zeros)
         matrix = np.zeros((len(self.transactions), len(item_list)), dtype=int)
         
-        # Fill matrix
+        # Fill matrix: 1 if item present in transaction, 0 otherwise
         for trans_idx, transaction in enumerate(self.transactions):
             for item in transaction:
                 item_idx = item_to_idx[item]
@@ -175,41 +92,21 @@ class DataLoader:
         return matrix, item_list, transaction_ids
     
     def transpose_table(self, matrix: np.ndarray) -> np.ndarray:
-        """
-        Transpose the transaction matrix (key for CARPENTER algorithm).
-        
-        This converts from transaction-based view to item-based view,
-        which is more efficient for long databases.
-        
-        Args:
-            matrix: Transaction matrix (transactions × items)
-            
-        Returns:
-            Transposed matrix (items × transactions)
-        """
+        """Transpose matrix from transaction-based to item-based view."""
+        # Convert rows to columns and vice versa
         transposed = matrix.T
         print(f"✓ Transposed: {matrix.shape} → {transposed.shape}")
         return transposed
     
     def get_statistics(self) -> Dict[str, any]:
-        """
-        Calculate and return dataset statistics.
-        
-        Returns:
-            Dictionary containing various statistics
-            
-        TODO for Member 1:
-        - Number of transactions
-        - Number of unique items
-        - Average transaction length
-        - Min/max transaction length
-        - Item frequency distribution
-        """
+        """Calculate dataset statistics."""
         if not self.transactions:
             return {}
         
+        # Get length of each transaction
         transaction_lengths = [len(t) for t in self.transactions]
         
+        # Calculate various statistics
         stats = {
             'num_transactions': len(self.transactions),
             'num_unique_items': len(self.items),
@@ -223,7 +120,7 @@ class DataLoader:
         return stats
     
     def print_statistics(self):
-        """Print dataset statistics in a formatted way."""
+        """Print dataset statistics."""
         stats = self.get_statistics()
         
         print("\n" + "="*50)
@@ -240,37 +137,26 @@ class DataLoader:
 
 def create_sample_dataset(filename: str, num_transactions: int = 100, 
                          num_items: int = 20, avg_length: int = 5):
-    """
-    Create a sample transactional dataset for testing.
-    
-    Args:
-        filename: Output filename
-        num_transactions: Number of transactions to generate
-        num_items: Total number of unique items
-        avg_length: Average items per transaction
-        
-    TODO for Member 1:
-    - Generate synthetic transactional data
-    - Save to file in proper format
-    - Create both small and medium-sized datasets
-    """
+    """Create a sample dataset for testing."""
     import random
     
+    # Generate list of items
     items = [f"item_{i}" for i in range(1, num_items + 1)]
     
     with open(filename, 'w') as f:
         for _ in range(num_transactions):
-            # Random transaction length around average
+            # Random length around average
             length = max(1, int(random.gauss(avg_length, avg_length/3)))
             length = min(length, num_items)
             
+            # Pick random items for this transaction
             transaction = random.sample(items, length)
             f.write(' '.join(transaction) + '\n')
     
     print(f"✓ Created sample dataset: {filename}")
 
 
-# Example usage and testing
+# Test the module
 if __name__ == "__main__":
     print("Data Preprocessing Module - Member 1")
     print("=" * 50)
@@ -294,10 +180,9 @@ if __name__ == "__main__":
         loader.preprocess_data()
         loader.print_statistics()
         
-        # Create transaction matrix
+        # Create and transpose matrix
         matrix, items, trans_ids = loader.create_transaction_matrix()
         print(f"\nTransaction Matrix Shape: {matrix.shape}")
         
-        # Transpose for CARPENTER
         transposed = loader.transpose_table(matrix)
         print(f"Transposed Matrix Shape: {transposed.shape}")
