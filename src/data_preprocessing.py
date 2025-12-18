@@ -4,7 +4,7 @@ from typing import List, Dict, Set, Tuple
 
 
 class DataLoader:
-    """Load and preprocess transactional data for CARPENTER algorithm."""
+    # Load and preprocess transactional data for CARPENTER algorithm
     
     def __init__(self, filepath: str = None):
         # Store file path
@@ -17,7 +17,7 @@ class DataLoader:
         self.num_transactions = 0
         
     def load_dataset(self, filepath: str = None, delimiter: str = ' ') -> List[Set[str]]:
-        """Load transactions from file."""
+        # Load transactions from file
         # Update filepath if provided
         if filepath:
             self.filepath = filepath
@@ -47,7 +47,7 @@ class DataLoader:
     
     def preprocess_data(self, remove_duplicates: bool = True, 
                        min_transaction_length: int = 1) -> List[Set[str]]:
-        """Clean and filter transactions."""
+        # Clean and filter transactions
         if not self.transactions:
             print("✗ No transactions loaded.")
             return []
@@ -67,7 +67,7 @@ class DataLoader:
         return processed
     
     def create_transaction_matrix(self) -> Tuple[np.ndarray, List[str], List[int]]:
-        """Convert transactions to binary matrix format."""
+        # Convert transactions to binary matrix format
         if not self.transactions:
             print("✗ No transactions to convert.")
             return np.array([]), [], []
@@ -92,14 +92,14 @@ class DataLoader:
         return matrix, item_list, transaction_ids
     
     def transpose_table(self, matrix: np.ndarray) -> np.ndarray:
-        """Transpose matrix from transaction-based to item-based view."""
+        # Transpose matrix from transaction-based to item-based view
         # Convert rows to columns and vice versa
         transposed = matrix.T
         print(f"✓ Transposed: {matrix.shape} → {transposed.shape}")
         return transposed
     
     def get_statistics(self) -> Dict[str, any]:
-        """Calculate dataset statistics."""
+        # Calculate dataset statistics
         if not self.transactions:
             return {}
         
@@ -120,7 +120,7 @@ class DataLoader:
         return stats
     
     def print_statistics(self):
-        """Print dataset statistics."""
+        # Print dataset statistics
         stats = self.get_statistics()
         
         print("\n" + "="*50)
@@ -137,7 +137,7 @@ class DataLoader:
 
 def create_sample_dataset(filename: str, num_transactions: int = 100, 
                          num_items: int = 20, avg_length: int = 5):
-    """Create a sample dataset for testing."""
+    # Create a sample dataset for testing
     import random
     
     # Generate list of items
