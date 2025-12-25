@@ -6,7 +6,7 @@ import os
 import pandas as pd
 
 # ✅ Import Member 1 preprocessing
-from src.data_preprocessing import DataLoader
+from data_preprocessing import DataLoader
 
 
 @dataclass(frozen=True)
