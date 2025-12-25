@@ -5,7 +5,6 @@ from typing import Dict, List, Set, FrozenSet, Tuple, Optional, Union
 import os
 import pandas as pd
 
-# ✅ Import Member 1 preprocessing
 from data_preprocessing import DataLoader
 
 
@@ -16,12 +15,6 @@ class Pattern:
 
 
 class CARPENTER:
-    """
-    CARPENTER-style closed frequent itemset mining using a transposed (vertical) representation.
-
-    Input: transactions = List[Set[str]]
-    Output: List[Pattern] (closed frequent itemsets)
-    """
 
     def __init__(self, minsup: Union[int, float] = 0.05, max_patterns: Optional[int] = None):
         self.minsup = minsup
@@ -169,7 +162,7 @@ if __name__ == "__main__":
     print("CARPENTER Algorithm Module - Member 2")
     print("=" * 50)
 
-    # ✅ Use Member 1 preprocessing pipeline
+    #  preprocessing pipeline
     loader = DataLoader()
     transactions = loader.load_dataset("data/raw/sample_small.txt")  # adjust dataset name if needed
     transactions = loader.preprocess_data(remove_duplicates=True, min_transaction_length=1)
@@ -178,7 +171,7 @@ if __name__ == "__main__":
         print("✗ No transactions after preprocessing. Exiting.")
         raise SystemExit(1)
 
-    # ✅ Run CARPENTER
+    #  Run CARPENTER
     miner = CARPENTER(minsup=0.05)  # change if teacher gave specific minsup
     patterns = miner.mine_patterns(transactions)
 
@@ -186,5 +179,5 @@ if __name__ == "__main__":
     for p in patterns[:20]:
         print(f"support={p.support:>4}  items={sorted(p.items)}")
 
-    # ✅ Save for visualization member
+    #  Save for visualization 
     save_patterns_csv(patterns, "results/carpenter_patterns.csv")
