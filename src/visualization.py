@@ -5,16 +5,10 @@ from typing import List, Set, Dict, Tuple
 
 
 class PatternVisualizer:
-    """
-    Visualization tools for CARPENTER algorithm results
-    Member 3: Ayesha Muniir - Visualization & Analysis
-    """
-    
     def __init__(self, figsize=(12, 6)):
         self.figsize = figsize
         
     def plot_pattern_support(self, patterns: List[Dict], top_n: int = 15):
-        """Plot support values for top N patterns"""
         if not patterns:
             print("No patterns to visualize")
             return
@@ -37,7 +31,7 @@ class PatternVisualizer:
         plt.show()
         
     def plot_pattern_distribution(self, patterns: List[Dict]):
-        """Plot distribution of pattern sizes"""
+        # Plot distribution of pattern sizes
         if not patterns:
             print("No patterns to visualize")
             return
@@ -58,7 +52,7 @@ class PatternVisualizer:
         
     def plot_transaction_matrix(self, matrix: np.ndarray, item_list: List[str], 
                                sample_size: int = 10):
-        """Visualize transaction matrix as heatmap"""
+        # Visualize transaction matrix as heatmap
         sample_matrix = matrix[:sample_size, :min(15, len(item_list))]
         
         fig, ax = plt.subplots(figsize=(12, 6))
@@ -77,7 +71,7 @@ class PatternVisualizer:
         plt.show()
         
     def plot_algorithm_statistics(self, stats: Dict):
-        """Plot algorithm execution statistics"""
+        # Plot algorithm execution statistics
         if not stats:
             print("No statistics to visualize")
             return
@@ -120,6 +114,5 @@ class PatternVisualizer:
 
 # Test the module
 if __name__ == "__main__":
-    print("Visualization Module - Member 3")
-    print("=" * 50)
+    print("Visualization Module")
     print("PatternVisualizer class is ready for use")

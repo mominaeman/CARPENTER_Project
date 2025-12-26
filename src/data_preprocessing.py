@@ -35,21 +35,21 @@ class DataLoader:
                         self.items.update(items)
                         
             self.num_transactions = len(self.transactions)
-            print(f"✓ Loaded {self.num_transactions} transactions with {len(self.items)} unique items")
+            print(f"Loaded {self.num_transactions} transactions with {len(self.items)} unique items")
             return self.transactions
             
         except FileNotFoundError:
-            print(f"✗ Error: File not found at {self.filepath}")
+            print(f"Error: File not found at {self.filepath}")
             return []
         except Exception as e:
-            print(f"✗ Error loading dataset: {str(e)}")
+            print(f"Error loading dataset: {str(e)}")
             return []
     
     def preprocess_data(self, remove_duplicates: bool = True, 
                        min_transaction_length: int = 1) -> List[Set[str]]:
         # Clean and filter transactions
         if not self.transactions:
-            print("✗ No transactions loaded.")
+            print("No transactions loaded.")
             return []
         
         processed = self.transactions.copy()
@@ -62,14 +62,14 @@ class DataLoader:
         # Filter by minimum length
         processed = [t for t in processed if len(t) >= min_transaction_length]
         
-        print(f"✓ Preprocessing: {original_count} → {len(processed)} transactions")
+        print(f"Preprocessing: {original_count} → {len(processed)} transactions")
         self.transactions = processed
         return processed
     
     def create_transaction_matrix(self) -> Tuple[np.ndarray, List[str], List[int]]:
         # Convert transactions to binary matrix format
         if not self.transactions:
-            print("✗ No transactions to convert.")
+            print("No transactions to convert.")
             return np.array([]), [], []
         
         # Sort items for consistent ordering
@@ -88,14 +88,14 @@ class DataLoader:
                 
         transaction_ids = list(range(len(self.transactions)))
         
-        print(f"✓ Created transaction matrix: {matrix.shape[0]} × {matrix.shape[1]}")
+        print(f"Created transaction matrix: {matrix.shape[0]} × {matrix.shape[1]}")
         return matrix, item_list, transaction_ids
     
     def transpose_table(self, matrix: np.ndarray) -> np.ndarray:
         # Transpose matrix from transaction-based to item-based view
         # Convert rows to columns and vice versa
         transposed = matrix.T
-        print(f"✓ Transposed: {matrix.shape} → {transposed.shape}")
+        print(f"Transposed: {matrix.shape} → {transposed.shape}")
         return transposed
     
     def get_statistics(self) -> Dict[str, any]:
@@ -123,16 +123,13 @@ class DataLoader:
         # Print dataset statistics
         stats = self.get_statistics()
         
-        print("\n" + "="*50)
         print("DATASET STATISTICS")
-        print("="*50)
         print(f"Total Transactions:     {stats.get('num_transactions', 0)}")
         print(f"Unique Items:           {stats.get('num_unique_items', 0)}")
         print(f"Avg Transaction Length: {stats.get('avg_transaction_length', 0):.2f}")
         print(f"Min Transaction Length: {stats.get('min_transaction_length', 0)}")
         print(f"Max Transaction Length: {stats.get('max_transaction_length', 0)}")
         print(f"Database Density:       {stats.get('density', 0):.4f}")
-        print("="*50 + "\n")
 
 
 def create_sample_dataset(filename: str, num_transactions: int = 100, 
@@ -153,13 +150,12 @@ def create_sample_dataset(filename: str, num_transactions: int = 100,
             transaction = random.sample(items, length)
             f.write(' '.join(transaction) + '\n')
     
-    print(f"✓ Created sample dataset: {filename}")
+    print(f"Created sample dataset: {filename}")
 
 
 # Test the module
 if __name__ == "__main__":
-    print("Data Preprocessing Module - Member 1")
-    print("=" * 50)
+    print("Data Preprocessing Module")
     
     # Create sample datasets
     create_sample_dataset('data/raw/sample_small.txt', 

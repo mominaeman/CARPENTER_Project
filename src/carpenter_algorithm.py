@@ -155,12 +155,11 @@ def save_patterns_csv(patterns: List[Pattern], out_path: str = "results/carpente
 
     df = pd.DataFrame(rows)
     df.to_csv(out_path, index=False)
-    print(f"✓ Saved patterns to {out_path} ({len(df)} rows)")
+    print(f"Saved patterns to {out_path} ({len(df)} rows)")
 
 
 if __name__ == "__main__":
-    print("CARPENTER Algorithm Module - Member 2")
-    print("=" * 50)
+    print("CARPENTER Algorithm Module")
 
     #  preprocessing pipeline
     loader = DataLoader()
@@ -168,14 +167,14 @@ if __name__ == "__main__":
     transactions = loader.preprocess_data(remove_duplicates=True, min_transaction_length=1)
 
     if not transactions:
-        print("✗ No transactions after preprocessing. Exiting.")
+        print("No transactions after preprocessing. Exiting.")
         raise SystemExit(1)
 
     #  Run CARPENTER
     miner = CARPENTER(minsup=0.05)  # change if teacher gave specific minsup
     patterns = miner.mine_patterns(transactions)
 
-    print(f"✓ Found {len(patterns)} closed frequent patterns")
+    print(f"Found {len(patterns)} closed frequent patterns")
     for p in patterns[:20]:
         print(f"support={p.support:>4}  items={sorted(p.items)}")
 
